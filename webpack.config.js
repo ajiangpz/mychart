@@ -3,7 +3,11 @@ const htmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const vueLoaderPlugin=require('vue-loader/lib/plugin')
 module.exports = {
-    entry: './src/index.js',
+    entry: {index:'./src/index.js',test:'./src/test.js'},
+    output:{
+        filename:'[name].js',
+        path:__dirname+'/dist'
+    },
     module: {
         rules: [
             {
@@ -18,6 +22,10 @@ module.exports = {
         new htmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html'
+        }),
+        new htmlWebpackPlugin({
+            filename: 'test.html',
+            template:'src/test.html'
         }),
         new webpack.ProvidePlugin({
             $: 'jquery',

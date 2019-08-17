@@ -34,7 +34,7 @@ export default {
   width: 100%;
   min-height: 30px;
   line-height: 30px;
-  border: 1px dashed black;
+  border: 1px dashed lightblue;
   border-radius: 5px;
   margin-bottom: 10px;
 }
@@ -48,8 +48,8 @@ export default {
   box-sizing: border-box;
   margin-right: 5px;
   text-align: center;
-  background: #fff;
-  color: #151212;
+  background: lightblue;
+  color:white;
 }
 </style>
 

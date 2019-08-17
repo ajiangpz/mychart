@@ -7,315 +7,49 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link href="https://cdn.bootcss.com/dropzone/5.5.1/dropzone.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/src/css/index.css">
+  <link rel="stylesheet" type="text/css" href="/src/css/animation.css">
   <title>easyChart</title>
-  <style>
-    .progress {
-      height: 10px;
-      width: 100px;
-      background-color: aqua;
-    }
-
-    .dropzone {
-      border: 1px dashed rgba(76, 76, 235, 0.842);
-      box-sizing: border-box;
-      text-align: center;
-      margin: 5px;
-      border-radius: 5px;
-    }
-
-    #dropArea .dz-preview .dz-image {
-      background: #fff;
-    }
-
-    #dropArea .dz-details span {
-      color: rgba(0, 0, 0, 0.3)
-    }
-
-    #inputTip {
-      margin-top: 10px;
-      text-align: center;
-      color: orange;
-      height: 150px;
-
-    }
-
-    .asideFull {
-      position: absolute;
-      top: 100px;
-      bottom: 50px;
-      width: 100%;
-      padding: 5px;
-      box-sizing: border-box;
-    }
-
-    .chartModel {
-      display: inline-block;
-      width: 100px;
-      height: 100px;
-      text-align: center;
-      line-height: 100px;
-    }
-
-    .chartLib {
-      display: inline-block;
-      text-align: center;
-      margin: 10px 5px 0 5px;
-      padding: 5px;
-      border: 5px solid #DFE8F6;
-      box-sizing: border-box;
-      width: 175px;
-    }
-
-    .choose {
-      border: 5px solid #A4EDBA;
-    }
-
-    .step-title span {
-      cursor: pointer;
-      margin: 0 10px
-    }
-
-    .panel-left {
-      float: left;
-      width: 100px;
-      height: 100%;
-      box-sizing: border-box;
-      cursor: pointer;
-      background: #ddd;
-      border-radius: 5px;
-      margin-right: 5px;
-      padding: 10px 5px;
-
-    }
-
-    .panel-right {
-      overflow: auto;
-      height: 100%;
-      background-color: #aaa;
-      padding: 10px;
-      box-sizing: border-box;
-      border-radius: 5px;
-    }
-
-    .panel-right::-webkit-scrollbar {
-      width: 0px;
-      padding: 0 2px;
-    }
-
-    .panel-right::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-      color: yellow;
-      margin-right: 5px;
-    }
-
-    .panel-right::-webkit-scrollbar-track {
-      background: #f5f5f5;
-    }
-
-    .panel-item {
-      background: #000;
-    }
-
-    .itemStyle {
-      position: relative;
-      width: 100%;
-      text-align: left;
-    }
-
-    .itemStyle .set-font {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      outline: none;
-      box-sizing: border-box;
-      border: 0px solid black;
-    }
-
-    .panel-left .menu li {
-      border-radius: 5px;
-      background: #fff;
-      margin-bottom: 5px;
-      text-align: center;
-      height: 30px;
-      line-height: 30px;
-      font-size: 14px;
-      font-weight: 400;
-      color: #000;
-      list-style: none;
-    }
-
-    .panel-left .menu li.active {
-      background: #000;
-      color: #fff;
-    }
-
-    .step-enter {
-      transform: translateX(-10px);
-      opacity: 0;
-    }
-
-    .step-leave-to {
-      transform: translateX(10px);
-      opacity: 0;
-    }
-
-    .step-enter-active,
-    .step-leave-active {
-      transition: all .3s linear;
-    }
-
-    .panel-enter-active,
-    .panel-leave-active {
-      transition: all .3s linear
-    }
-
-    .panel-enter {
-      transform: translateX(10px);
-      opacity: 0;
-    }
-
-    .panel-leave-to {
-      transform: translateX(-10px);
-      opacity: 0;
-      /* 进入前的状态,可以理解为将元素向右移动了10px的距离，在插入元素之后一帧移除*/
-    }
-
-
-
-    #dropArea .dz-preview .dz-upload {
-      background: greenyellow;
-    }
-
-    .step-title {
-      background: #fff;
-    }
-
-    .step-title .titleActive {
-      color: #000;
-    }
-
-    .step-title span {
-      color: gray;
-    }
-
-    .chartbox {
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background: #aaa;
-      border-radius: 5px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .chartbox::-webkit-scrollbar {
-      width: 0;
-    }
-
-    .deleteCol {
-      width: 20px;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background-image: url('http://localhost:9527/static/svg/downarrow.svg');
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-
-    .td-input {
-      text-align: right;
-      background: transparent;
-      outline: none;
-      border: none;
-    }
-
-    .deteleRows {
-      position: absolute;
-      width: 40px;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background-image: url('http://localhost:9527/static/svg/alter_delete.svg');
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-  </style>
 </head>
-
 <body>
   <div id="container">
+    <div class="bounce-loader" v-show="isLoaded"> 
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <div id="header">
       <span>可视化工具</span>
     </div>
-    <div id="aside">
-      <div class="step-title">
+    <div id="aside" :style="{width:asideWidth}"  v-cloak v-show="fullScreen">
+      <div class="step-title" >
         <span v-for="item in stepTitle" @click="showItem(item)"
-          v-bind:class="{titleActive:item.status}">{{item.name}}</span>
+          v-bind:class="{titleActive:item.status}">{{item.name}}
+        </span>
       </div>
       <transition name="step" mode="out-in">
         <div id="dataInput" v-if="this.stepTitle[0].status" class="asideFull" key="dataInput">
           <form id="dropArea" class="dropzone" action="http://localhost:3000/uploadFile">
             <div id="preview-template" style="display: none;">
-
               <div class="dz-preview dz-file-preview">
                 <div class="dz-image"><img data-dz-thumbnail="" src="../static/img/excel.png" width="100%"
                     height="100%">
                 </div>
-                <div class="dz-details">
-                  <div class="dz-size"><span data-dz-size=""></span></div>
-                  <div class="dz-filename"><span data-dz-name=""></span></div>
-                </div>
                 <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress=""></span></div>
-                <div class="dz-error-message"><span data-dz-errormessage=""></span></div>
-
-
-
                 <div class="dz-success-mark">
-
-                  <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-                    <!-- Generator: Sketch 3.2.1 (9971) - http://www.bohemiancoding.com/sketch -->
-                    <title>Check</title>
-                    <desc>Created with Sketch.</desc>
-                    <defs></defs>
-                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-                      <path
-                        d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z"
-                        id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475"
-                        fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
-                    </g>
-                  </svg>
-
+                  <img src="./static/svg/success_mark.svg">
                 </div>
                 <div class="dz-error-mark">
-
-                  <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-                    <!-- Generator: Sketch 3.2.1 (9971) - http://www.bohemiancoding.com/sketch -->
-                    <title>error</title>
-                    <desc>Created with Sketch.</desc>
-                    <defs></defs>
-                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-                      <g id="Check-+-Oval-2" sketch:type="MSLayerGroup" stroke="#747474" stroke-opacity="0.198794158"
-                        fill="#FFFFFF" fill-opacity="0.816519475">
-                        <path
-                          d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z"
-                          id="Oval-2" sketch:type="MSShapeGroup"></path>
-                      </g>
-                    </g>
-                  </svg>
-
-                </div>
-
-
+                  <img src="./static/svg/error_mark.svg">
+              </div>
               </div>
             </div>
+             <div class="dz-message dz-default">
+                <span>请上传excel或者csv</span>
+              </div>
           </form>
           <div id="inputTip">
-            <span>请上传一维数据表格或者csv文件
+            <span>
+              请上传一维数据表格或者csv文件
             </span>
             <img src="../static/img/inputTip.PNG" width="100%" height="100%" alt="数据模板">
           </div>
@@ -326,26 +60,27 @@
               <thead>
                 <tr>
                   <th v-for="(column,index) in columns" :key="column+index">
-                    <custom-choose :arr="columnOptions" v-on:receive="columnHandler($event,column)" v-if="index>0">
+                    <custom-choose :arr="columnOptions" 
+                    v-on:receive="columnHandler($event,column)" v-if="index>0">
                     </custom-choose>
                     {{column}}
                   </th>
-
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item,index) in rows" :key="item+index" v-if="item[columns[0]]">
-                  <td v-for="(value,key,index1) in item"><input type="text" v-model="item[key]"
+                <tr v-for="(item,index) in rows" :key="item+index" v-if="item[columns[0]]"  >
+                  <td v-for="(value,key,index1) in item">
+                    <input type="text" v-model="item[key]"
                       :size="(value+'').length" class="td-input">
-                    <div class="deteleRows" @click="deleteRows(index)" v-if="index1===0"></div>
+                    <div class="deteleRows" 
+                    @click="deleteRows(index)" v-if="index1===0">
+                    </div>
                   </td>
-
                 </tr>
               </tbody>
-
-            </table>
+            </table> 
           </div>
-          <div v-else=><span>请上传数据哦</span></div>
+          <div v-else="rows.length"><span>请上传数据哦</span></div>
         </div>
         <div id="dataModel" v-if="this.stepTitle[2].status" class="asideFull" key="dataModel">
           <div class="chartbox">
@@ -391,8 +126,6 @@
                   :type="selectType.bold" :key=3 title="副标题粗细">
                 </custom-select>
               </div>
-
-
               <div v-if="baseSettingsModel.axis.status" key="axix">
                 <custom-input v-model="baseSettings.xAxis[0].name" :key=1 title="x轴标题">
                 </custom-input>
@@ -409,9 +142,6 @@
                   title="x轴上下对齐">
                 </custom-select>
                 <custom-check v-model="baseSettings.xAxis[0].inverse" title="x轴翻转" id="x-inverse"></custom-check>
-
-
-
                 <custom-input v-model="baseSettings.yAxis[0].name" :key=2 title="y轴标题">
                 </custom-input>
                 <custom-select v-model="baseSettings.xAxis[0].nameTextStyle.fontWeight" :items="fontWeights"
@@ -427,10 +157,7 @@
                   :key="Math.random()" title="y轴上下对齐">
                 </custom-select>
                 <custom-check v-model="baseSettings.yAxis[0].inverse" title="对侧显示" :key="0"></custom-check>
-
               </div>
-
-
               <div v-if="baseSettingsModel.outlook.status" key="outlook">
                 <custom-select v-model="baseSettings.textStyle.fontFamily" :items="fontFamilys"
                   :type="selectType.fontFamily" :key="Math.random()" title="图表字体"></custom-select>
@@ -445,12 +172,13 @@
 
 
               <div v-if="baseSettingsModel.series.status" key="series">
-                <custom-drag :items="columns.slice(1)" title="指标"></custom-drag>
-                <custom-drop v-model="settings['metrics']" title="指标" :items="columns.slice(1)" type="metrics">
-                </custom-drop>
+
 
                 <div v-if="settings.type==='histogram'||settings.type==='line'||settings.type==='bar'">
-                  <custom-drop v-model="settings.stack.stack" :items="columns.slice(1)" title="堆叠"></custom-drop>
+              <!--     <custom-drop v-model="settings.stack.stack" :items="columns.slice(1)" title="堆叠"></custom-drop> -->
+                  <custom-drag :items="columns.slice(1)" title="指标"></custom-drag>
+                  <custom-drop v-model="settings['metrics']" title="指标" :items="columns.slice(1)" type="metrics">
+                  </custom-drop>              
                 </div>
                 <div v-if="settings.type==='histogram'">
                   <custom-drop v-model="settings.showLine" :items="columns.slice(1)" title="显示为线">
@@ -477,11 +205,19 @@
                   </custom-width>
                 </div>
                 <div v-if="settings.type==='map'">
-                  <custom-select v-model="settings.position" :items="mapPosition" title="地图类型"></custom-select>
-                  <custom-check v-model="settings.label" id="mapLabel" title="地图文本标签"></custom-check>
+                  <custom-select v-model="settings.position" :items="mapPosition" title="地图类型">
+                  </custom-select>
+                  <custom-check v-model="settings.label" id="mapLabel" title="地图文本标签"></custom-check>                      
                 </div>
+                <custom-check v-model="visualMap" title="数据映射" id="visualMap">
+                </custom-check>
+                <custom-check v-model="baseSettings.visualMap.show" title="显示映射条" v-if="visualMap" id="show">
+                </custom-check>                
+                <custom-input v-model="baseSettings.visualMap.min" title="最小值" v-if="visualMap">
+                </custom-input>
+                <custom-input v-model="baseSettings.visualMap.max" title="最大值" v-if="visualMap">
+                </custom-input>                 
               </div>
-
               <div v-if="baseSettingsModel.legend.status" key="legend">
                 <custom-select v-model="baseSettings.legend.type" :items="['plain','scroll']" title="图例类型">
                 </custom-select>
@@ -491,19 +227,26 @@
                 <custom-select v-model="baseSettings.legend.top" title="图例水平位置" :items="['top','middle','bottom']">
                 </custom-select>
                 <custom-width v-model="baseSettings.legend.width" title="图例宽度" step="10"></custom-width>
-                <custom-check v-model="baseSettings.toolbox.show" title="工具盒" id="toolboxShow"></custom-check>
+                <custom-check v-model="baseSettings.toolbox.show" title="工具盒" id="toolboxShow">
+                </custom-check>                
               </div>
             </transition>
-
-
           </div>
         </div>
       </transition>
-
     </div>
-    <div id="dragger"></div>
-    <div id="main">
-      <div v-bind:style="{width:width,height:height}" id="chart"></div>
+    <div id="dragger" @mousedown="handleMouseDown" 
+    :style="{left:dragPosition}">
+      
+    </div>
+    <div id="main" :style="{left:mainPosition,borderRadius:'5px'}">
+      <div class="fullScreen" @click="fullScreenHandler"></div>
+      <div v-bind:style="{width:width,height:height}" id="chart">
+        <span> 上传数据才有图表哦</span>
+      </div>
+    </div>
+    <div id="login">
+      <custom-login> </custom-login>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

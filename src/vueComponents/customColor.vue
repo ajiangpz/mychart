@@ -1,3 +1,4 @@
+
 <template>
   <div class="cc">
     <div class="title">
@@ -56,7 +57,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 5px;
-  border: 1px solid black;
+  border: 1px solid lightblue;
 }
 .cc .title {
   text-align: left;

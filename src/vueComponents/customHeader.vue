@@ -33,7 +33,7 @@ export default {
   width: 100px;
   height: 30px;
   vertical-align: middle;
-  border: 1px solid black;
+  border: 1px solid lightblue;
   background-color: #fff;
   text-align: center;
   box-sizing: border-box;

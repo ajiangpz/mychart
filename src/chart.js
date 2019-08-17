@@ -25,10 +25,11 @@ import {
     log
 } from "util";
 export function chart(arg) {
+    console.log('传入的参数:'+arg.data.columns)
     if (!arg) arg = {}
     this.data = arg.data || []
     this.settings = arg.settings || {}
-    this.baseSettings = arg.baseSettings;
+    this.baseSettings = arg.baseSettings
     this.el = arg.el || 'chart'
     this.beforeConfig = arg.beforeConfig
     this.afterConfig = arg.afterConfig
@@ -41,10 +42,7 @@ export function chart(arg) {
     this.markLine = arg.markLine
     this.markArea = arg.markArea
     this.markPoint = arg.markPoint
-
     this.baseSettings = {
-        width: arg.width,
-        height: arg.height,
         grid: arg.grid,
         colors: arg.colors,
         visualMap: arg.visualMap,
@@ -65,16 +63,11 @@ export function chart(arg) {
         backgroundColor: arg.backgroundColor,
         textStyle: arg.textStyle
     }
-
-
-
-
-
     this.initOptions = arg.initOptions
     this.animation = arg.animation
     this.theme = arg.theme
     this.themeName = arg.themeName
-    this.loading = arg.loading
+    this.loading = arg.loading||true
     this.dataEmpty = arg.dataEmpty
     this.extend = arg.extend
     this.judgeWidth = arg.judgeWidth || false
@@ -97,19 +90,12 @@ chart.prototype.draw = function () {
 chart.prototype.dataHandler = function (arg) {
     if (!this.chartHandler) return;
     //arguments[0]才是传入的对象
-
-
     this.columns = arg ? arg.data ? arg.data.columns : this.data.columns : this.data.columns;
     this.rows = arg ? arg.data ? arg.data.rows : this.data.rows : this.data.rows;
     this.settings = arg ? arg.settings || this.settings : this.settings;
     this.baseSettings = arg ? arg.baseSettings || this.baseSettings : this.baseSettings;
     this.width = arg ? arg.width : this.width
-    this.height = arg ? arg.height : this.width
-    console.log(this.columns, this.rows, this.settings)
-
-
-
-
+    this.height = arg ? arg.height : this.width  
     let extra = {
         tooltipVisible: this.tooltipVisible,
         legendVisible: this.legendVisible,
@@ -139,6 +125,15 @@ chart.prototype.init = function () {
         themeName,
         this.initOptions
     );
+    if(this.loading) {
+        this.echarts.showLoading('default', {
+          text: '加载中',
+          color: 'lightgreen',
+          textColor: '#000',
+          maskColor: 'rgba(255, 255, 255, 0.8)',
+          zlevel: 0
+        })
+    }
     if (this.data) this.changeHandler();
     this.createEventProxy();
     if (this.resizeable) {
@@ -268,6 +263,7 @@ chart.prototype.optionsHandler = function (options) {
     // }
     if (this._isDestroyed) return;
     if (this.log) console.log(options);
+
     this.echarts.setOption(options, setOptionOpts);
     // this.$emit("ready", this.echarts, options, echartsLib);
     // if (!this._once["ready-once"]) {
@@ -281,6 +277,7 @@ chart.prototype.optionsHandler = function (options) {
     //     this._once["afterSetOptionOnce"] = true;
     //     this.afterSetOptionOnce(this.echarts, options, echartsLib);
     // }
+    if(this.loading)this.echarts.hideLoading();
 }
 chart.prototype.resize = function () {
     if (!this.cancelResizeCheck) {

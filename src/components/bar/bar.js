@@ -154,12 +154,12 @@ function getBarSeries(args) {
         opacity,
         dims
     } = args;
-    let series = [];
+     let series = [];
     const seriesTemp = {};
     const secondAxis = isHistogram ? axisSite.right || [] : axisSite.top || [];
     const secondDimAxisIndex = isHistogram ? "yAxisIndex" : "xAxisIndex";
     const stackMap = stack && getStackMap(stack);
-    metrics.forEach(item => {
+    metrics.forEach(item =>{
         seriesTemp[item] = [];
     });
     innerRows.forEach(row => {

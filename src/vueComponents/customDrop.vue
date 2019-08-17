@@ -77,7 +77,7 @@ export default {
   width: 100%;
   min-height: 30px;
   line-height: 30px;
-  border: 1px solid black;
+  border: 1px solid lightblue;
   border-radius: 5px;
 }
 .dropItem {
@@ -85,12 +85,13 @@ export default {
   width: 60px;
   height: 20px;
   text-align: center;
-  background: #fff;
+  background: lightblue;
   color: #000;
   line-height: 20px;
   border-radius: 5px;
   display: inline-block;
   margin-right: 10px;
+  color:white;
 }
 .dropItem .after {
   position: absolute;

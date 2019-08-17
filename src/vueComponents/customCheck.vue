@@ -50,7 +50,7 @@ export default {
   position: relative;
   display: inline-block;
   background: #fff;
-  border: 1px solid black;
+  border: 1px solid lightblue;
 }
 .cc:before,
 .cc:after {

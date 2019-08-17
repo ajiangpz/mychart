@@ -29,19 +29,31 @@
         bottom: 0;
         left: 0;
         box-sizing: border-box;
+        user-select: none;
     }
 
     #main {
-        overflow: auto;
+        overflow: hidden;
         position: absolute;
         left: 410px;
-        top: 70px;
+        top: 65px;
         bottom: 0;
         right: 0;
         background: #fff;
-        padding: 10px;
+        padding: 10px;  
+        border-radius: 5px;
     }
-
+    #main .fullScreen{
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: url(http://localhost:9527/static/svg/fullScreen.svg) no-repeat center;
+        background-position: contain;
+        background-size: contain;
+        z-index: 2;
+    }
     #dragger {
         position: absolute;
         left: 400px;
@@ -54,8 +66,17 @@
 
     #chart {
         box-sizing: border-box;
-        border-radius: 5px;
-    }
+        border-radius: 10px;
+        width: 100%;
+        height: 100%;
+        text-align: center;  
+      }
+      #chart span{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+      }
 
     .step-title {
         position: relative;
@@ -84,7 +105,7 @@
 
     #tableau {
         position: relative;
-        background: #aaa;
+        background: #fff;
         width: 100%;
         height: 100%;
         overflow: auto;
@@ -93,7 +114,8 @@
     }
 
     #tableau thead {
-        background: #13131f6c
+        background: #fff;
+        color: lightblue;
     }
 
     #tableau th,
@@ -107,5 +129,241 @@
     }
 
     #tableau tr:nth-child(even) {
-        background: #13131f6c
+        background: lightblue;
+    }
+     .progress {
+      height: 10px;
+      width: 100px;
+      background-color: aqua;
+    }
+
+    .dropzone {
+      border: 1px dashed rgba(76, 76, 235, 0.842);
+      box-sizing: border-box;
+      text-align: center;
+      margin: 5px;
+      border-radius: 5px;
+    }
+
+    #dropArea .dz-preview .dz-image {
+      background: #fff;
+    }
+
+    #dropArea .dz-details span {
+      color: rgba(0, 0, 0, 0.3)
+    }
+
+    #inputTip {
+      margin-top: 10px;
+      text-align: center;
+      color: orange;
+      height: 150px;
+
+    }
+
+    .asideFull {
+      position: absolute;
+      top: 100px;
+      bottom: 50px;
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+
+    .chartModel {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      line-height: 100px;
+    }
+
+    .chartLib {
+      display: inline-block;
+      text-align: center;
+      margin: 10px 5px 0 5px;
+      padding: 5px;
+      border: 5px solid #DFE8F6;
+      box-sizing: border-box;
+      width: 175px;
+    }
+
+    .choose {
+      border: 5px solid #A4EDBA;
+    }
+
+    .step-title span {
+      cursor: pointer;
+      margin: 0 10px
+    }
+
+    .panel-left {
+      float: left;
+      width: 100px;
+      height: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      background: lightgray;
+      border-radius: 5px;
+      margin-right: 5px;
+      padding: 10px 5px;
+
+    }
+
+    .panel-right {
+      overflow: auto;
+      height: 100%;
+      background-color: #fff;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 5px;
+    }
+
+    .panel-right::-webkit-scrollbar {
+      width: 0px;
+      padding: 0 2px;
+    }
+
+    .panel-right::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      color: yellow;
+      margin-right: 5px;
+    }
+
+    .panel-right::-webkit-scrollbar-track {
+      background: #f5f5f5;
+    }
+
+    .panel-item {
+      background: #000;
+    }
+
+    .itemStyle {
+      position: relative;
+      width: 100%;
+      text-align: left;
+    }
+
+    .itemStyle .set-font {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      outline: none;
+      box-sizing: border-box;
+      border: 0px solid black;
+    }
+
+    .panel-left .menu li {
+      border-radius: 5px;
+      background: #fff;
+      margin-bottom: 5px;
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #000;
+      list-style: none;
+    }
+
+    .panel-left .menu li.active {
+      background: lightblue;
+      color: #fff;
+    }
+
+    .step-enter {
+      transform: translateX(-10px);
+      opacity: 0;
+    }
+
+    .step-leave-to {
+      transform: translateX(10px);
+      opacity: 0;
+    }
+
+    .step-enter-active,
+    .step-leave-active {
+      transition: all .3s linear;
+    }
+
+    .panel-enter-active,
+    .panel-leave-active {
+      transition: all .3s linear
+    }
+
+    .panel-enter {
+      transform: translateX(10px);
+      opacity: 0;
+    }
+
+    .panel-leave-to {
+      transform: translateX(-10px);
+      opacity: 0;
+      /* 进入前的状态,可以理解为将元素向右移动了10px的距离，在插入元素之后一帧移除*/
+    }
+
+
+
+    #dropArea .dz-preview .dz-upload {
+      background: greenyellow;
+    }
+
+    .step-title {
+      background: #fff;
+    }
+
+    .step-title .titleActive {
+      color: #000;
+    }
+
+    .step-title span {
+      color: gray;
+    }
+
+    .chartbox {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: #fff;
+      border-radius: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .chartbox::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .deleteCol {
+      width: 20px;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background-image: url('http://localhost:9527/static/svg/downarrow.svg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .td-input {
+      text-align: right;
+      background: transparent;
+      outline: none;
+      border: none;
+    }
+
+    .deteleRows {
+      position: absolute;
+      width: 40px;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-image: url('http://localhost:9527/static/svg/alter_delete.svg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    [v-cloak]{
+      display: none;
     }

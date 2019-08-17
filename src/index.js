@@ -11,7 +11,6 @@ import "echarts/lib/chart/bar"
 import "echarts/lib/chart/pie"
 import "echarts/lib/chart/line"
 import "echarts-wordcloud/dist/echarts-wordcloud.min.js"
-
 import customSelect from './vueComponents/customSelect.vue'
 import customInput from './vueComponents/customInput.vue'
 import customCheck from './vueComponents/customCheck.vue'
@@ -22,47 +21,11 @@ import customDialog from './vueComponents/customDialog.vue'
 import customRange from './vueComponents/customRange.vue'
 import customSettings from './vueComponents/customSettings.vue'
 import customDrag from './vueComponents/customDrag.vue'
-import barSettings from './vueComponents/barSettings.vue'
-import pieSettings from './vueComponents/pieSettings.vue'
 import customWidth from './vueComponents/customScrollWidth.vue'
 import customChoose from './vueComponents/customChoose.vue'
 import customDrop from './vueComponents/customDrop.vue'
-// let $dragNode = $("#dragger"),
-//     bodyWidth = $("body").width(),
-//     dragger = false,
-//     timer = null;
-// $dragNode.mousedown(function (e) {
-//     dragger = true;
-// });
-// $(document).mousemove(function (e) {
-//     let clientX =
-//         e.clientX >= 400 ?
-//         bodyWidth - e.clientX <= 400 ?
-//         bodyWidth - 400 :
-//         e.clientX :
-//         400;
-//     if (dragger) {
-//         $dragNode.css("left", clientX + "px");
-//         $dragNode.prev().width(clientX + "px");
-//         $dragNode.next().css("left", clientX + 10 + "px");
-//         clearTimeout(timer);
-//         timer = setTimeout(() => {
-//             line.echarts.resize();
-//         }, 1000);
-//     }
-// });
-// $(document).mouseup(function (e) {
-//     dragger = false;
-//     e.stopPropagation();
-// });
-// let line = new eLine({
-//     el: "chart",
-//     data: {
-//         columns,
-//         rows
-//     }
-// });
-// line.draw();
+import customLogin from './vueComponents/customLogin.vue'
+import "./components/bar/index.js"
 let app = new Vue({
     el: '#container',
     data() {
@@ -70,35 +33,38 @@ let app = new Vue({
             columns: [],
             rows: [],
             settings: {
-                type: 'histogram',
-                stack: {
-                    stack: []
-                },
-                axisSite: {
-                    right: [],
-                    top: []
-                },
-                limitShowNum: 5,
-                yAxisType: ['normal', 'normal'],
-                area: false,
-                radius: 150,
-                offsetY: 300,
-                metrics: []
+            type: 'histogram',
+            loading:true,
+            stack: {
+                stack: []
             },
+            axisSite: {
+                right: [],
+                top: []
+            },
+            limitShowNum: 5,
+            yAxisType: ['normal', 'normal'],
+            area: false,
+            radius: 150,
+            offsetY: 300,
+            metrics: []
+            },
+            visualMap:false,
             dataType: ['normal', 'KMB', 'percent'],
             width: '100%',
             height: '100%',
-            chartLib: [{
+            chartLib: [
+                {
                     name: 'pie',
                     imgSrc: './static/svg/pie.svg',
                     isChoose: {
-                        choose: true
+                        choose: false
                     }
                 }, {
                     name: 'histogram',
                     imgSrc: './static/svg/bar.svg',
                     isChoose: {
-                        choose: false
+                        choose: true
                     }
                 }, {
                     name: 'line',
@@ -154,7 +120,8 @@ let app = new Vue({
 
             },
             mapPosition: ['china', 'china-cities', 'china-contour', 'world', 'province/beijing'],
-            baseSettings: {
+            baseSettings: 
+            {
                 grid: {
 
                 },
@@ -232,7 +199,7 @@ let app = new Vue({
                     position: 'left',
                     nameLocation: 'middle',
                     inverse: false
-                }],
+                }],     
                 radar: {},
                 tooltip: {},
                 axisPointer: {},
@@ -291,9 +258,12 @@ let app = new Vue({
             }, {
                 name: '删除',
                 handler: 'deleteCols'
-            }]
+            }],
+            dragger:false,
+            dragOffset:400,
+            isLoaded:true,
+            fullScreen:true,            
         }
-
     },
     components: {
         customSelect,
@@ -306,11 +276,10 @@ let app = new Vue({
         customRange,
         customSettings,
         customDrag,
-        barSettings,
-        pieSettings,
         customWidth,
         customChoose,
-        customDrop
+        customDrop,
+        customLogin
     },
     computed: {
         menuActive() {
@@ -333,9 +302,17 @@ let app = new Vue({
                 a.push(item.name)
             })
             return a;
+        },
+        asideWidth(){
+            return this.dragOffset+'px'
+        },
+        dragPosition(){
+            return this.dragOffset+'px'
+        },
+        mainPosition(){
+            return this.dragOffset+10+'px'
         }
     },
-
     watch: {
         settings: {
             handler: debounce(function (val) {
@@ -349,62 +326,75 @@ let app = new Vue({
         },
         baseSettings: {
             handler: debounce(function (val) {
-
-                console.log('baseSettings', val)
+                console.log(val)
                 this.chart.dataHandler({
                     baseSettings: val
                 });
             }, 1000),
             deep: true
         },
+        visualMap:{
+            handler:function(val){
+                if(val){
+                    this.$set(this.baseSettings,'visualMap',JSON.parse(sessionStorage.getItem('visualMap'))||{show:false,min:1000,max:10000})
+                }else{
+                    sessionStorage.setItem('visualMap',JSON.stringify(this.baseSettings.visualMap))
+                    this.$set(this.baseSettings,'visualMap',{})
+                }
+            }
+        },
         width: {
             handler: debounce(function (val) {
-                console.log(val)
                 this.chart.resize()
-
             }, 1000)
         },
         height: {
             handler: debounce(function (val) {
-                console.log(val)
                 this.chart.resize()
-
             }, 1000)
-
+        },
+        dragOffset: {
+            handler: debounce(function (val) {
+                this.chart.resize()
+            }, 1)
         }
-        //节流函数，多次操作只执行最后一次操作(这次操作1000ms之前没有任何操作)
-        //思路：利用函数嵌套形成闭包，使定时器变量保存在内存中，每一次触发事件处理函数，先
-        //清除之前的定时器，再重新开始一个定时器，定时器到了规定时间会自动执行事件处理函数
-        //防抖函数，多次操作只执行第一次操作，这次操作1000ms有操作了再执行
-        //思路：利用闭包，保留现在的时间，当函数被触发时，保存此时的时间，减去之前保留的时间，是否
-        //大于延时时间，如果大于，执行函数，反之，不做任何处理，等待下一次触发
+            //节流函数，多次操作只执行最后一次操作(这次操作1000ms之前没有任何操作)
+            //思路：利用函数嵌套形成闭包，使定时器变量保存在内存中，每一次触发事件处理函数，先
+            //清除之前的定时器，再重新开始一个定时器，定时器到了规定时间会自动执行事件处理函数
+            //防抖函数，多次操作只执行第一次操作，这次操作1000ms有操作了再执行
+            //思路：利用闭包，保留现在的时间，当函数被触发时，保存此时的时间，减去之前保留的时间，是否
+            //大于延时时间，如果大于，执行函数，反之，不做任何处理，等待下一次触发
     },
+    created(){
+        document.addEventListener('mousemove',this.handlerMouseMove)
+        document.addEventListener('mouseup',this.handleMouseUp)
+    },  
     mounted() {
-        let app = this
+        
+        let app = this;
+        this.isLoaded=false
         Dropzone.options.dropArea = {
             init: function () {
                 let _this = this
                 this.on('sending', function (file, xhr, formData) {
-                    xhr.onreadystatechange = function () {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
-                            let responseData = JSON.parse(xhr.responseText)
-                            if (!responseData.status) {
-                                _this.removeFile(file)
-                            }
-                        }
-                    }
+                	xhr.onreadystatechange = function () {
+                		if (xhr.readyState == 4 && xhr.status == 200) {
+                			let responseData = JSON.parse(xhr.responseText)
+                			if (!responseData.status) {
+                				_this.removeFile(file)
+                			}
+                		}
+                	}
                 })
                 this.on('success', function (file, res) {
-
                         let data = null;
                         if (res.data.filename.split('.').reverse()[0] === 'csv') {
                             Papa.parse(file, {
                                 complete: function (results) {
+                                  
                                     app.rows = results.data
                                     app.columns = Object.keys(app.rows[0])
                                     app.init();
-
-
                                 },
                                 header: true
                             });
@@ -415,13 +405,8 @@ let app = new Vue({
                                 app.rows = data
                                 app.columns = Object.keys(app.rows[0])
                                 app.init();
-
-
                             })
                         }
-
-
-
                     }),
                     this.on('maxfilesexceeded', function (file) {
                         console.log('rearch')
@@ -440,9 +425,7 @@ let app = new Vue({
             },
             previewTemplate: document.querySelector('#preview-template').innerHTML,
             addRemoveLinks: true,
-            maxFiles: 1,
             acceptedFiles: '.xls,.xlsx,.csv'
-
         };
     },
     methods: {
@@ -455,14 +438,13 @@ let app = new Vue({
                     rows: this.rows,
                 },
                 settings: this.settings,
-
+                loading:this.loading,
                 width: this.width,
                 height: this.height
             })
             this.chart.setType('histogram')
             this.chart.draw();
             this.$watch('columns', debounce(function (val) {
-
                 if (this.columns && JSON.stringify(Object.keys(this.rows[0])) === JSON.stringify(this.columns)) {
                     console.log('columns true')
                     this.chart.dataHandler({
@@ -474,10 +456,8 @@ let app = new Vue({
                 } else {
                     console.log('columns false')
                 }
-
             }, 1000));
             this.$watch("rows", debounce(function (val) {
-
                 if (this.rows[0] && (JSON.stringify(Object.keys(this.rows[0])) === JSON.stringify(this.columns))) {
                     console.log('rows true')
                     this.chart.dataHandler({
@@ -563,7 +543,6 @@ let app = new Vue({
             this.columns.splice(this.columns.indexOf(name), 1)
             console.log(this.rows)
         },
-
         upsort(name) {
             this.rows.sort(function (a, b) {
                 return a[name] - b[name]
@@ -593,6 +572,39 @@ let app = new Vue({
                     break;
 
             }
+        },
+        handleMouseDown(){
+            this.dragger=true;
+        },
+        handlerMouseMove(e){
+            if(this.dragger){
+                if(e.clientX<=400){
+                    this.dragOffset=400
+                }else if(e.clientX>=800){
+                    this.dragOffset=800;
+                }else{
+                    this.dragOffset=e.clientX
+                }
+                
+            }
+        },
+        handleMouseUp(){
+            if(this.dragger){
+                this.dragger=false;
+            }
+        },
+        fullScreenHandler(){
+            if(this.dragOffset>0){
+                sessionStorage.setItem('dragOffset',this.dragOffset)
+                this.dragOffset=-10
+                
+                this.fullScreen=false;
+            }else{
+                this.dragOffset=sessionStorage.getItem('dragOffset')-0
+                this.fullScreen=true;
+            }
+            this.chart.resize()
+            
         }
 
     }

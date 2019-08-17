@@ -125,7 +125,7 @@ export default {
   width: 100%;
   height: 30px;
   outline: none;
-  border: 1px solid black;
+  border: 1px solid lightblue;
   border-radius: 5px;
   box-sizing: border-box;
   cursor: pointer;

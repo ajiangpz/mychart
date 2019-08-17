@@ -2,11 +2,9 @@ let fs = require('fs')
 const multer = require('koa-multer')
 const mime = require('mime')
 let storage = multer.diskStorage({
-    //定义文件保存路径
     destination: function (req, file, cb) {
-        cb(null, './upload/'); //路径根据具体而定。如果不存在的话会自动创建一个路径
-    }, //注意这里有个，
-    //修改文件名
+        cb(null, './upload/'); 
+    },
     filename: function (req, file, cb) {
         var fileFormat = (file.originalname).split(".");
         cb(null, Date.now() + "." + fileFormat[fileFormat.length - 1]);
@@ -17,10 +15,8 @@ let upload = multer({
     fileFilter: function (req, file, cb) {
         let fileExtend = mime.getExtension(file.mimetype)
         if (fileExtend === 'xls' || fileExtend === 'xlsx') {
-            console.log('true')
             cb(null, true)
         } else {
-            console.log('false')
             cb(null, false)
         }
     }
@@ -36,9 +32,6 @@ function addMapping(router, o) {
             } else {
                 router.post(item.slice(4), o[item])
             }
-
-
-
         } else {
             console.log('invalid url')
         }
@@ -61,21 +54,21 @@ module.exports = (dir) => {
     let controller_dir = dir || '/controllers/',
         router = require('koa-router')();
     addController(router, controller_dir);
-    router.post('/uploadFile', upload.single('file'), async (ctx, next) => {
-        console.log(ctx.req.file)
-        if (!ctx.req.file) {
-            ctx.body = {
-                status: false,
-                data: 'ecxel,csv'
-            }
-        } else {
-            ctx.body = {
-                status: true,
-                data: ctx.req.file
-            }
-        }
+router.post('/uploadFile', upload.single('file'), async (ctx, next) => {
+	console.log(ctx.req.file)
+	if (!ctx.req.file) {
+		ctx.body = {
+			status: false,
+			data: 'ecxel,csv'
+		}
+	} else {
+		ctx.body = {
+			status: true,
+			data: ctx.req.file
+		}
+	}
+})
 
-    })
     return router.routes()
 }
 //将处理url的函数从app.js提取出来作为一个中间件，中间件必须是一个函数
